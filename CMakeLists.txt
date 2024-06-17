@@ -17,5 +17,25 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(async-mqtt5)
 
-add_executable(checker src/checker.cpp)
+add_executable(check_async-mqtt5 src/check_async-mqtt5.cpp)
 include_directories(${async-mqtt5_SOURCE_DIR}/include)
+
+
+include(FetchContent)
+FetchContent_Declare(
+  async_mqtt
+  GIT_REPOSITORY https://github.com/redboltz/async_mqtt.git
+  GIT_TAG 7dfa232becd4ead69ab5ff00bf63a24c66c483be
+)
+FetchContent_MakeAvailable(async_mqtt)
+
+add_executable(check_async_mqtt src/check_async_mqtt.cpp)
+include_directories(${async_mqtt_SOURCE_DIR}/include)
+
+add_library(async_mqtt src/async_mqtt.cpp)
+target_compile_definitions(async_mqtt PRIVATE ASYNC_MQTT_SEPARATE_COMPILATION)
+
+add_executable(check_async_mqtt_separate src/check_async_mqtt_separate.cpp)
+include_directories(${async_mqtt_SOURCE_DIR}/include)
+target_compile_definitions(check_async_mqtt_separate PRIVATE ASYNC_MQTT_SEPARATE_COMPILATION)
+target_link_libraries(check_async_mqtt_separate PRIVATE async_mqtt)
